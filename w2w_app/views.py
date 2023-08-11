@@ -1,6 +1,7 @@
 from django.http import Http404
 from django.shortcuts import render, redirect
 from django.views import View
+from django.views.generic import ListView
 
 from w2w_app.forms import AddPersonModelForm
 from w2w_app.models import Person
@@ -10,6 +11,7 @@ from w2w_app.models import Person
 class HomeView(View):
     def get(self, request):
         return render(request, template_name='home.html')
+
 
 class PersonView(View):
     def get(self, request, person_id):
@@ -30,5 +32,10 @@ class AddPersonModelFormView(View):
         form = AddPersonModelForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('home')
+            return redirect('persons_list')
         return render(request, 'form.html', {'form': form})
+
+
+class PersonsGenericListView(ListView):
+    model = Person
+    template_name = 'persons_list.html'

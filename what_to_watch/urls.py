@@ -26,7 +26,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.HomeView.as_view(), name='home'),
     path('person/<int:person_id>', views.PersonView.as_view(), name='person'),
-    path('addPerson/', views.AddPersonModelFormView.as_view(), name='add_person')
+    path('addPerson/', views.AddPersonModelFormView.as_view(), name='add_person'),
+    path('persons/', views.PersonsGenericListView.as_view(), name='persons_list')
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
