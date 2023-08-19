@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+    {{ msg }}
+    <form method="post">
+        {% csrf_token %}
+        <p><input type="text" name="first_name" placeholder="First Name"></p>
+        <p><input type="text" name="last_name" placeholder="Last Name"></p>
+        <p><input type="text" name="username" placeholder="Username"></p>
+        <p><input type="email" name="email" placeholder="Email"></p>
+        <p><input type="password" name="password1" placeholder="Password"></p>
+        <p><input type="password" name="password2" placeholder="Password confirmation"></p>
+        <button type="submit" class="btn btn-success">Register</button>
+    </form>
+{% endblock %}

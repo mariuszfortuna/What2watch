@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{{ movie.title }}</h1>
+    <p>Director: {{ movie.director }}</p>
+    <p>Actors:
+        {% for actor in movie.actors.all %}
+            {{ actor.first_name }} {{ actor.last_name }}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+    </p>
+    <p>Platform: {{ movie.platform.name }}</p>
+    <p>Genres:
+        {% for genre in movie.genres.all %}
+            {{ genre.name }}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+    </p>
+    <img src="{{ movie.poster.url }}" alt="{{ movie.title }}" width="200">
+    <p>Average Rating: {{ movie.rating_avg |floatformat:"1"}}</p>
+
+    <a href="{% url 'ratings_comments_for_movie' movie.id %}">View Ratings and Comments</a>
+{% endblock %}

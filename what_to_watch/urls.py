@@ -17,17 +17,22 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
 from w2w_app import views
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('accounts.urls')),
     path('', views.HomeView.as_view(), name='home'),
     path('person/<int:person_id>', views.PersonView.as_view(), name='person'),
     path('addPerson/', views.AddPersonModelFormView.as_view(), name='add_person'),
-    path('persons/', views.PersonsGenericListView.as_view(), name='persons_list')
+    path('persons/', views.PersonsGenericListView.as_view(), name='persons_list'),
+    path('addMovie/', views.AddMovieModelFormView.as_view(), name='add_movie'),
+    path('Movies/', views.MoviesListView.as_view(), name='movie_list'),
+    path('movie/<int:movie_id>/', views.MovieView.as_view(), name='movie_detail'),
+    path('movie/<int:movie_id>/ratings_comments/', views.RatingCommentsView.as_view(), name='ratings_comments_for_movie'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

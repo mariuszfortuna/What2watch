@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import DecimalField
 from django.db.models.functions import Coalesce
 from django.core.validators import MaxValueValidator, MinValueValidator
 
@@ -11,19 +12,29 @@ class Person(models.Model):
     last_name = models.CharField(max_length=128)
     photo = models.ImageField(upload_to='person', default='default_person.jpeg')
 
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
 
 class Platform(models.Model):
     name = models.CharField(max_length=128)
     logo = models.ImageField(upload_to='logo')
+    website_link = models.URLField(default='')
+
+    def __str__(self):
+        return self.name
 
 
 class Genre(models.Model):
     name = models.CharField(max_length=128)
 
+    def __str__(self):
+        return self.name
+
 
 class Movie(models.Model):
     title = models.CharField(max_length=128)
-    director = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='directed_by')
+    director = models.ForeignKey(Person, blank=True, null=True, on_delete=models.CASCADE, related_name='directed_by')
     actors = models.ManyToManyField(Person, blank=True, related_name='cast')
     platform = models.ForeignKey(Platform, on_delete=models.CASCADE)
     genres = models.ManyToManyField(Genre)
@@ -31,8 +42,9 @@ class Movie(models.Model):
 
     def rating_avg(self):
         return RatingComment.objects.filter(movie=self).aggregate(
-            avg=Coalesce(models.Avg('rating'), 0),
+            avg=Coalesce(models.Avg('rating'), 0, output_field=DecimalField()),
         )['avg']
+
 
 
 class RatingComment(models.Model):

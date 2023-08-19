@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Movie List</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Director</th>
+                <th>Actors</th>
+                <th>Platform</th>
+                <th>Average Rating</th>
+                <th>Poster</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for movie in movies %}
+                <tr>
+                    <td>{{ movie.title }}</td>
+                    <td>{{ movie.director }}</td>
+                    <td>
+                        {% for actor in movie.actors.all %}
+                            {{ actor.first_name }} {{ actor.last_name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {{ movie.platform.name }}<br>
+                        <a href="{{ movie.platform.website_link }}" target="_blank">Visit Platform</a>
+                    </td>
+                    <td>{{ movie.rating_avg|floatformat:"1"|default:"N/A" }}</td>
+                    <td>
+                        <a href="{% url 'movie_detail' movie.id %}">
+                            <img src="{{ movie.poster.url }}" alt="{{ movie.title }}" width="100">
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

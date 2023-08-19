@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Ratings and Comments for {{ movie.title }}</h1>
+    <ul>
+        {% for rc in ratings_comments %}
+            <li>
+                <strong>User:</strong> {{ rc.user.username }}<br>
+                <strong>Rating:</strong> {{ rc.rating }}<br>
+                <strong>Comment:</strong> {{ rc.comment }}
+            </li>
+        {% empty %}
+            <li>No ratings or comments yet.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Add Rating and Comment</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+    <a href="{% url 'movie_detail' movie.id %}">Back to Movie Details</a>
+{% endblock %}
