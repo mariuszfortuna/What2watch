@@ -2,19 +2,24 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.http import Http404
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.views import View
-from django.views.generic import ListView
+from django.views.generic import ListView, UpdateView
 from django.db.models import Avg, FloatField, Case, When, Value
 
 from w2w_app.forms import AddPersonModelForm, AddMovieModelForm, RatingCommentsForm
 from w2w_app.models import Person, Movie, RatingComment
 
 
-
 # Create your views here.
 class HomeView(View):
     def get(self, request):
-        return render(request, template_name='home.html')
+        recently_added_movies = Movie.objects.order_by('-id')[:3]
+
+        context = {
+            'recently_added_movies': recently_added_movies
+        }
+        return render(request, 'home.html', context)
 
 
 class PersonView(View):
@@ -45,6 +50,15 @@ class PersonsGenericListView(ListView):
     template_name = 'persons_list.html'
 
 
+class UpdatePerson(UpdateView):
+    model = Person
+    fields = '__all__'
+    template_name = 'form.html'
+
+    def get_success_url(self):
+        return reverse('update_person', kwargs={'pk': self.kwargs['pk']})
+
+
 class AddMovieModelFormView(View):
 
     def get(self, request):
@@ -64,14 +78,12 @@ class MoviesListView(ListView):
     template_name = 'movie_list.html'
     context_object_name = 'movies'
 
-    # queryset = Movie.objects.annotate(avg_rating=Avg('ratings_comments__rating')).order_by('-avg_rating')
-
     def get_queryset(self):
         queryset = Movie.objects.annotate(
             rating_avg=Avg('ratings_comments__rating'),
         ).annotate(
             has_ratings=Case(
-                When(ratings_comments__isnull=True, then=Value(0)),
+                When(ratings_comments__isnull=True, then=Value(0)), #If the video has no ratings (that is, no links in the ratings_comments relationship), the has_ratings flag is set to 0.
                 default=Value(1),
                 output_field=FloatField()
             )
@@ -86,6 +98,15 @@ class MovieView(View):
             return render(request, 'movie.html', {'movie': movie})
         else:
             raise Http404('Movie does not exist')
+
+
+class UpdateMovie(UpdateView):
+    model = Movie
+    fields = '__all__'
+    template_name = 'form.html'
+
+    def get_success_url(self):
+        return reverse('update_movie', kwargs={'pk': self.kwargs['pk']})
 
 
 class RatingCommentsView(LoginRequiredMixin, View):
@@ -108,7 +129,6 @@ class RatingCommentsView(LoginRequiredMixin, View):
             rating = form.cleaned_data['rating']
             comment = form.cleaned_data['comment']
             RatingComment.objects.create(movie=movie, user=request.user, rating=rating, comment=comment)
-            # form.save()
             return redirect('ratings_comments_for_movie', movie_id=movie_id)
         return render(request, 'rating_comments_for_movie.html',
                       {'movie': movie, 'ratings_comments': ratings_comments, 'form': form})

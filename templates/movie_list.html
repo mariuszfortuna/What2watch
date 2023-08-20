@@ -25,6 +25,7 @@
                     </td>
                     <td>
                         {{ movie.platform.name }}<br>
+                        <img src="{{ movie.platform.logo.url }}" width="50" height="50"><br>
                         <a href="{{ movie.platform.website_link }}" target="_blank">Visit Platform</a>
                     </td>
                     <td>{{ movie.rating_avg|floatformat:"1"|default:"N/A" }}</td>

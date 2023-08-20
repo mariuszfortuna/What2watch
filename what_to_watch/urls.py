@@ -33,6 +33,11 @@ urlpatterns = [
     path('Movies/', views.MoviesListView.as_view(), name='movie_list'),
     path('movie/<int:movie_id>/', views.MovieView.as_view(), name='movie_detail'),
     path('movie/<int:movie_id>/ratings_comments/', views.RatingCommentsView.as_view(), name='ratings_comments_for_movie'),
+    path('updateMovie/<int:pk>/', views.UpdateMovie.as_view(), name='update_movie'),
+    path('updatePerson/<int:pk>/', views.UpdatePerson.as_view(), name='update_person'),
+
+
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

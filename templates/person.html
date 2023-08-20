@@ -7,7 +7,9 @@
 
     <h2>{{ person.first_name }}</h2>
     <h2>{{ person.last_name }}</h2>
-    <p>{{ person.photo }}</p>
-    <img src={{ person.photo.url }} />
+
+    <img src={{ person.photo.url }} /><br>
+
+    <a href="{% url 'update_person' person.id %}">Edit</a>
 
 {% endblock %}

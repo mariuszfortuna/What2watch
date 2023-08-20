@@ -17,5 +17,7 @@
     <img src="{{ movie.poster.url }}" alt="{{ movie.title }}" width="200">
     <p>Average Rating: {{ movie.rating_avg |floatformat:"1"}}</p>
 
-    <a href="{% url 'ratings_comments_for_movie' movie.id %}">View Ratings and Comments</a>
+    <a href="{% url 'ratings_comments_for_movie' movie.id %}">View Ratings and Comments</a><br>
+    <a href="{% url 'update_movie' movie.id %}">Edit Movie</a>
+
 {% endblock %}
