@@ -1,0 +1,12 @@
+/* kolor strzałek karuzeli */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    filter: invert(50%);
+}
+
+.carousel-title {
+    margin: 0; /* Usunięcie domyślnego marginesu */
+    padding: 10px; /* Dodanie odstępu od innych elementów */
+    text-decoration: none; /* Usunięcie podkreślenia */
+    color: #333; /* Ustawienie koloru tekstu */
+}
