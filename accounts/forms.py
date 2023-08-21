@@ -19,10 +19,10 @@ class RegisterForm(forms.ModelForm):
 
 
 class UserUpdateView(forms.ModelForm):
-
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'user_permissions']
+        fields = ['first_name', 'last_name', 'groups', 'user_permissions']
         widgets = {
-            'user_permissions': forms.CheckboxSelectMultiple()
+            'user_permissions': forms.CheckboxSelectMultiple(),
+            'groups': forms.CheckboxSelectMultiple()
         }

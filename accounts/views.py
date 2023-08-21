@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
@@ -46,6 +46,11 @@ class RegisterView(View):
             user = form.save(commit=False)
             user.set_password(form.cleaned_data['password1'])
             user.save()
+
+            # Add a user to an existing "Users" group
+            users_group = Group.objects.get(name='Users')
+            user.groups.add(users_group)
+
             return redirect('login')
         return render(request, 'register.html', {'form': form})
 
