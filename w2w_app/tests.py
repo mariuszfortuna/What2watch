@@ -31,19 +31,22 @@ def test_movie_list_view(movies):
     url = reverse('movie_list')
     response = browser.get(url)
     assert response.status_code == 200
-
+    assert response.context['movies'].count() == len(movies)
     for movie in movies:
-        assert any(movie.title == listed_movie.title for listed_movie in response.context['movies'])
-        assert any(movie.director == listed_movie.director for listed_movie in response.context['movies'])
-        assert any(movie.platform == listed_movie.platform for listed_movie in response.context['movies'])
-        assert any(movie.poster == listed_movie.poster for listed_movie in response.context['movies'])
-        assert any(movie.genres == listed_movie.genres for listed_movie in response.context['movies'])
-        assert any(movie.actors == listed_movie.actors for listed_movie in response.context['movies'])
+        assert movie in response.context['movies']
+
+    # for movie in movies:
+    #     assert any(movie.title == listed_movie.title for listed_movie in response.context['movies'])
+    #     assert any(movie.director == listed_movie.director for listed_movie in response.context['movies'])
+    #     assert any(movie.platform == listed_movie.platform for listed_movie in response.context['movies'])
+    #     assert any(movie.poster == listed_movie.poster for listed_movie in response.context['movies'])
+    #     assert any(movie.genres == listed_movie.genres for listed_movie in response.context['movies'])
+    #     assert any(movie.actors == listed_movie.actors for listed_movie in response.context['movies'])
 
 
 @pytest.mark.django_db
-def test_ratings_comments_for_movie(movie, user):
-    url = reverse('ratings_comments_for_movie', kwargs={'movie_id': movie.id})
+def test_ratings_comments_for_movie(movies, user):
+    url = reverse('ratings_comments_for_movie', kwargs={'movie_id': movies[0].id})
     client = Client()
     client.force_login(user)
     response = client.get(url)

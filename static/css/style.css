@@ -10,3 +10,27 @@
     text-decoration: none; /* Usunięcie podkreślenia */
     color: #333; /* Ustawienie koloru tekstu */
 }
+
+#sidebar {
+    width: 250px;
+    background-color: #232526; /* Kolor tła */
+    color: #fff; /* Kolor tekstu */
+    position: fixed;
+    height: 100vh;
+    }
+
+#sidebar ul.nav li.nav-item {
+    padding: 10px;
+    }
+
+#sidebar ul.nav li.nav-item a.nav-link {
+    color: #fff; /* Kolor linków */
+    }
+
+#sidebar ul.nav li.nav-item a.nav-link:hover {
+    color: #4e1717; /* Kolor linków po najechaniu */
+    }
+
+.col-md-9 {
+    margin-top: 50px; /* Obniża górną margines głównej treści */
+}

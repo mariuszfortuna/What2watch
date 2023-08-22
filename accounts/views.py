@@ -1,17 +1,18 @@
-from django.shortcuts import render
-
-# Create your views here.
+from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, Group
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
-from django.views.generic import ListView, DetailView, UpdateView
-
+from django.views.generic import ListView, UpdateView
 from accounts.forms import RegisterForm, UserUpdateView
+from what_to_watch.context_processors import user_is_moderator
 
 
 # Create your views here.
+
+
 class LoginView(View):
     def get(self, request):
         return render(request, 'login.html')
@@ -55,15 +56,24 @@ class RegisterView(View):
         return render(request, 'register.html', {'form': form})
 
 
-class UserListView(ListView):
+# List of registered users
+class UserListView(UserPassesTestMixin, ListView):
     model = User
     template_name = 'user_list.html'
 
+    # checks if the user belongs to the Moderators group returns Tru or False
+    def test_func(self):
+        return user_is_moderator(self.request.user)
 
-class UpdateUserView(UpdateView):
+
+# Edit a user, add a user to a group.
+class UpdateUserView(UserPassesTestMixin, UpdateView):
     model = User
     template_name = 'user_update.html'
     form_class = UserUpdateView
+
+    def test_func(self):
+        return user_is_moderator(self.request.user)
 
     def get_success_url(self):
         return reverse('update_user', kwargs={'pk': self.object.pk})
