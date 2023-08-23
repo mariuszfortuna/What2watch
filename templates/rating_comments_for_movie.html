@@ -1,18 +1,29 @@
 {% extends 'base.html' %}
-
+{% block title %}Ratings and Comments{% endblock %}
 {% block content %}
-    <h1>Ratings and Comments for {{ movie.title }}</h1>
-    <ul>
-        {% for rc in ratings_comments %}
-            <li>
-                <strong>User:</strong> {{ rc.user.username }}<br>
-                <strong>Rating:</strong> {{ rc.rating }}<br>
-                <strong>Comment:</strong> {{ rc.comment }}
-            </li>
-        {% empty %}
-            <li>No ratings or comments yet.</li>
-        {% endfor %}
-    </ul>
+    <h4>Ratings and Comments for {{ movie.title }}</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Rating</th>
+                <th>Comment</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rc in ratings_comments %}
+                <tr>
+                    <td>{{ rc.user.username }}</td>
+                    <td>{{ rc.rating }}</td>
+                    <td>{{ rc.comment }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3">No ratings or comments yet.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
     <h2>Add Rating and Comment</h2>
     <form method="post">
@@ -21,5 +32,5 @@
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 
-    <a href="{% url 'movie_detail' movie.id %}">Back to Movie Details</a>
+    <a href="{% url 'movie_detail' movie.id %}" class="btn btn-secondary">Back to Movie Details</a>
 {% endblock %}

@@ -1,18 +1,34 @@
 {% extends 'base.html' %}
 
-{% block title %}Person List{% endblock %}
+{% block title %}Actors and filmmakers{% endblock %}
 
 {% block content %}
-    <h4>Person list</h4>
-    <ul>
-    {% for obj in object_list %}
-        <li>
-            <a href="{% url 'person' obj.id %}">
-                <img src="{{ obj.photo.url }}" alt="{{ obj.first_name }} {{ obj.last_name }}" width="100" height="100">
-            </a>
-            {{ obj.first_name }} {{ obj.last_name }}
-        </li>
-    {% endfor %}
-    </ul>
+    <h4>Actors and filmmakers</h4>
+    <form method="GET" action="{% url 'persons_list' %}">
+    {{ form.as_p }}
+    <input type="submit" value="Submit" class="btn btn-primary" />
+    <a href="{% url 'persons_list' %}" class="btn btn-secondary">Clear Filters</a>
+    </form>
+
+     <table class="table">
+        <thead>
+            <tr>
+                <th>Photo</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for obj in object_list %}
+                <tr>
+                    <td>
+                        <a href="{% url 'person' obj.id %}">
+                            <img src="{{ obj.photo.url }}" alt="{{ obj.first_name }} {{ obj.last_name }}" width="100" height="100">
+                        </a>
+                    </td>
+                    <td>{{ obj.first_name }} {{ obj.last_name }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
 {% endblock %}

@@ -23,9 +23,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href={% url 'home' %}>Home</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'movie_list' %}">Movies</a>
-                </li>
+{#                <li class="nav-item">#}
+{#                    <a class="nav-link" href="{% url 'movie_list' %}">Movies</a>#}
+{#                </li>#}
             </ul>
             </div>
             <div>
@@ -48,32 +48,43 @@
 
     <div class="container-fluid">
         <div class="row">
-            {% if user.is_authenticated and user_is_moderator %}
+
             <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-secondary sidebar">
                 <div class="position-sticky">
                     <ul class="nav flex-column">
+
+
                         <li class="nav-item">
-                            <a class="nav-link" href="/admin">Admin Panel</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'add_person' %}">Add Person</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'persons_list' %}">Persons List</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'user_list' %}">User List</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'add_movie' %}">Add Movie</a>
+                            <a class="nav-link" href="{% url 'persons_list' %}">Actors and filmmakers</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'movie_list' %}">Movie List</a>
                         </li>
+                {% if user.is_authenticated and user_is_moderator %}
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin">Admin Panel</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'user_list' %}">User List</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'add_person' %}">Add Person</a>
+                        </li>
+
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'add_movie' %}">Add Movie</a>
+                        </li>
+                {% endif %}
+
+
+
                     </ul>
                 </div>
             </nav>
-            {% endif %}
+
 
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                 {% block content %}

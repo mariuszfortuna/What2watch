@@ -1,7 +1,17 @@
 {% extends 'base.html' %}
 
+{% block title %}Movie List{% endblock %}
 {% block content %}
-    <h1>Movie List</h1>
+
+
+    <h4>Movie List</h4>
+    <form method="GET" action="{% url 'movie_list' %}">
+    {{ form.as_p }}
+    <input type="submit" value="Submit" class="btn btn-primary" />
+    <a href="{% url 'movie_list' %}" class="btn btn-secondary">Clear Filters</a>
+    </form>
+
+
     <table class="table">
         <thead>
             <tr>
@@ -9,6 +19,7 @@
                 <th>Director</th>
                 <th>Actors</th>
                 <th>Platform</th>
+                <th>Genres</th>
                 <th>Average Rating</th>
                 <th>Poster</th>
             </tr>
@@ -28,6 +39,11 @@
                         <img src="{{ movie.platform.logo.url }}" width="50" height="50"><br>
                         <a href="{{ movie.platform.website_link }}" target="_blank">Visit Platform</a>
                     </td>
+                <td>
+                    {% for genre in movie.genres.all %}
+                        {{ genre.name }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </td>
                     <td>{{ movie.rating_avg|floatformat:"1"|default:"N/A" }}</td>
                     <td>
                         <a href="{% url 'movie_detail' movie.id %}">

@@ -35,7 +35,7 @@ class RatingCommentsForm(forms.ModelForm):
     class Meta:
         model = RatingComment
         fields = ['rating', 'comment']
-        # widgets = {
-        #     'rating': forms.NumberInput(attrs={'class': 'form-control'}),
-        #     'comment': forms.Textarea(attrs={'class': 'form-control'}),
-        # }
+
+
+# class PersonsFilterForm(forms.Form):
+#     first_name = forms.CharField()

@@ -7,6 +7,7 @@ from django.views import View
 from django.views.generic import ListView, UpdateView
 from django.db.models import Avg, FloatField, Case, When, Value
 
+from w2w_app.filters import PersonFilter, MovieFilter
 from w2w_app.forms import AddPersonModelForm, AddMovieModelForm, RatingCommentsForm
 from w2w_app.models import Person, Movie, RatingComment
 
@@ -31,6 +32,17 @@ class PersonView(View):
             raise Http404('Person does not exist')
 
 
+class PersonsFilterFormView(View):
+
+    def get(self, request):
+        person_filter = PersonFilter(request.GET, queryset=Person.objects.all())
+        context = {
+            'form': person_filter.form,
+            'object_list': person_filter.qs
+        }
+        return render(request, 'persons_list.html', context)
+
+
 class AddPersonModelFormView(View):
 
     def get(self, request):
@@ -43,11 +55,6 @@ class AddPersonModelFormView(View):
             form.save()
             return redirect('persons_list')
         return render(request, 'form.html', {'form': form})
-
-
-class PersonsGenericListView(ListView):
-    model = Person
-    template_name = 'persons_list.html'
 
 
 class UpdatePerson(UpdateView):
@@ -73,22 +80,34 @@ class AddMovieModelFormView(View):
         return render(request, 'form.html', {'form': form})
 
 
-class MoviesListView(ListView):
-    model = Movie
-    template_name = 'movie_list.html'
-    context_object_name = 'movies'
+# class MoviesListView(ListView):
+#     model = Movie
+#     template_name = 'movie_list.html'
+#     context_object_name = 'movies'
+#
+#     def get_queryset(self):
+#         queryset = Movie.objects.annotate(
+#             rating_avg=Avg('ratings_comments__rating'),
+#         ).annotate(
+#             has_ratings=Case(
+#                 When(ratings_comments__isnull=True, then=Value(0)),
+#                 # If the video has no ratings (that is, no links in the ratings_comments relationship), the has_ratings flag is set to 0.
+#                 default=Value(1),
+#                 output_field=FloatField()
+#             )
+#         )
+#         return queryset.order_by('-has_ratings', '-rating_avg')
 
-    def get_queryset(self):
-        queryset = Movie.objects.annotate(
-            rating_avg=Avg('ratings_comments__rating'),
-        ).annotate(
-            has_ratings=Case(
-                When(ratings_comments__isnull=True, then=Value(0)), #If the video has no ratings (that is, no links in the ratings_comments relationship), the has_ratings flag is set to 0.
-                default=Value(1),
-                output_field=FloatField()
-            )
-        )
-        return queryset.order_by('-has_ratings', '-rating_avg')
+
+class MovieFilterFormView(View):
+
+    def get(self, request):
+        movie_filter = MovieFilter(request.GET, queryset=Movie.objects.all())
+        context = {
+            'form': movie_filter.form,
+            'movies': movie_filter.qs
+        }
+        return render(request, 'movie_list.html', context)
 
 
 class MovieView(View):

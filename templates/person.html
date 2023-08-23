@@ -2,28 +2,35 @@
 {% block title %}Person{% endblock %}
 
 {% block content %}
+    <h2>{{ person.first_name }} {{ person.last_name }}</h2>
+    <img src="{{ person.photo.url }}" /><br>
 
-<h2>{{ person.first_name }} {{ person.last_name }}</h2>
-<img src="{{ person.photo.url }}" /><br>
+    {% if person.directed_by.exists %}
+        <h3>Movies Directed:</h3>
+        <table class="table">
+            <tbody>
+                {% for movie in person.directed_by.all %}
+                    <tr>
+                        <td><a href="{% url 'movie_detail' movie.id %}">{{ movie.title }}</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
 
-{% if person.directed_by.exists %}
-  <h3>Movies Directed:</h3>
-  <ul>
-    {% for movie in person.directed_by.all %}
-      <li><a href="{% url 'movie_detail' movie.id %}">{{ movie.title }}</a></li>
-    {% endfor %}
-  </ul>
-{% endif %}
+    {% if person.cast.exists %}
+        <h3>Roles:</h3>
+        <table class="table">
+            <tbody>
+                {% for movie in person.cast.all %}
+                    <tr>
+                        <td><a href="{% url 'movie_detail' movie.id %}">Role in {{ movie.title }}</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
 
-{% if person.cast.exists %}
-  <h3>Roles:</h3>
-  <ul>
-    {% for movie in person.cast.all %}
-      <li><a href="{% url 'movie_detail' movie.id %}">Role in {{ movie.title }}</a></li>
-    {% endfor %}
-  </ul>
-{% endif %}
-
-<a href="{% url 'update_person' person.id %}">Edit</a>
+    <a href="{% url 'update_person' person.id %}" class="btn btn-primary">Edit</a>
 
 {% endblock %}
