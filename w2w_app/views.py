@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 from django.http import Http404
 from django.shortcuts import render, redirect
@@ -8,8 +8,10 @@ from django.views.generic import ListView, UpdateView
 from django.db.models import Avg, FloatField, Case, When, Value
 
 from w2w_app.filters import PersonFilter, MovieFilter
-from w2w_app.forms import AddPersonModelForm, AddMovieModelForm, RatingCommentsForm
-from w2w_app.models import Person, Movie, RatingComment
+from w2w_app.forms import AddPersonModelForm, AddMovieModelForm, RatingCommentsForm, AddPlatformModelForm, \
+    AddGenreModelForm
+from w2w_app.models import Person, Movie, RatingComment, Genre, Platform
+from what_to_watch.context_processors import user_is_moderator
 
 
 # Create your views here.
@@ -43,7 +45,7 @@ class PersonsFilterFormView(View):
         return render(request, 'persons_list.html', context)
 
 
-class AddPersonModelFormView(View):
+class AddPersonModelFormView(UserPassesTestMixin, View):
 
     def get(self, request):
         form = AddPersonModelForm()
@@ -56,8 +58,11 @@ class AddPersonModelFormView(View):
             return redirect('persons_list')
         return render(request, 'form.html', {'form': form})
 
+    def test_func(self):
+        return user_is_moderator(self.request.user)
 
-class UpdatePerson(UpdateView):
+
+class UpdatePerson(UserPassesTestMixin, UpdateView):
     model = Person
     fields = '__all__'
     template_name = 'form.html'
@@ -65,8 +70,11 @@ class UpdatePerson(UpdateView):
     def get_success_url(self):
         return reverse('update_person', kwargs={'pk': self.kwargs['pk']})
 
+    def test_func(self):
+        return user_is_moderator(self.request.user)
 
-class AddMovieModelFormView(View):
+
+class AddMovieModelFormView(UserPassesTestMixin, View):
 
     def get(self, request):
         form = AddMovieModelForm()
@@ -79,24 +87,9 @@ class AddMovieModelFormView(View):
             return redirect('home')
         return render(request, 'form.html', {'form': form})
 
+    def test_func(self):
+        return user_is_moderator(self.request.user)
 
-# class MoviesListView(ListView):
-#     model = Movie
-#     template_name = 'movie_list.html'
-#     context_object_name = 'movies'
-#
-#     def get_queryset(self):
-#         queryset = Movie.objects.annotate(
-#             rating_avg=Avg('ratings_comments__rating'),
-#         ).annotate(
-#             has_ratings=Case(
-#                 When(ratings_comments__isnull=True, then=Value(0)),
-#                 # If the video has no ratings (that is, no links in the ratings_comments relationship), the has_ratings flag is set to 0.
-#                 default=Value(1),
-#                 output_field=FloatField()
-#             )
-#         )
-#         return queryset.order_by('-has_ratings', '-rating_avg')
 
 
 class MovieFilterFormView(View):
@@ -119,13 +112,16 @@ class MovieView(View):
             raise Http404('Movie does not exist')
 
 
-class UpdateMovie(UpdateView):
+class UpdateMovie(UserPassesTestMixin, UpdateView):
     model = Movie
     fields = '__all__'
     template_name = 'form.html'
 
     def get_success_url(self):
         return reverse('update_movie', kwargs={'pk': self.kwargs['pk']})
+
+    def test_func(self):
+        return user_is_moderator(self.request.user)
 
 
 class RatingCommentsView(LoginRequiredMixin, View):
@@ -151,3 +147,78 @@ class RatingCommentsView(LoginRequiredMixin, View):
             return redirect('ratings_comments_for_movie', movie_id=movie_id)
         return render(request, 'rating_comments_for_movie.html',
                       {'movie': movie, 'ratings_comments': ratings_comments, 'form': form})
+
+
+##
+
+class AddPlatformModelFormView(UserPassesTestMixin, View):
+
+    def get(self, request):
+        form = AddPlatformModelForm()
+        return render(request, 'form.html', {'form': form})
+
+    def post(self, request):
+        form = AddPlatformModelForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+        return render(request, 'form.html', {'form': form})
+
+    def test_func(self):
+        return user_is_moderator(self.request.user)
+
+class PlatformListView(View):
+
+    def get(self, request):
+        platforms = Platform.objects.all()
+        return render(request, 'list_view.html', {'objects': platforms})
+
+
+class UpdatePlatform(UserPassesTestMixin, UpdateView):
+    model = Platform
+    fields = '__all__'
+    template_name = 'form.html'
+
+    def get_success_url(self):
+        return reverse('update_platform', kwargs={'pk': self.kwargs['pk']})
+
+
+    def test_func(self):
+        return user_is_moderator(self.request.user)
+
+
+
+class AddGenreModelFormView(UserPassesTestMixin, View):
+
+    def get(self, request):
+        form = AddGenreModelForm()
+        return render(request, 'form.html', {'form': form})
+
+    def post(self, request):
+        form = AddGenreModelForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+        return render(request, 'form.html', {'form': form})
+
+    def test_func(self):
+        return user_is_moderator(self.request.user)
+
+
+class GenreListView(View):
+
+    def get(self, request):
+        genres = Genre.objects.all()
+        return render(request, 'list_view.html', {'objects': genres})
+
+
+class UpdateGenre(UserPassesTestMixin, UpdateView):
+    model = Genre
+    fields = '__all__'
+    template_name = 'form.html'
+
+    def get_success_url(self):
+        return reverse('update_genre', kwargs={'pk': self.kwargs['pk']})
+
+    def test_func(self):
+        return user_is_moderator(self.request.user)

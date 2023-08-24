@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import user_passes_test
+from psycopg2 import IntegrityError
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, Group
@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic import ListView, UpdateView
 from accounts.forms import RegisterForm, UserUpdateView
+from django.contrib import messages
 from what_to_watch.context_processors import user_is_moderator
 
 
@@ -20,12 +21,15 @@ class LoginView(View):
     def post(self, request):
         username = request.POST.get('username')
         password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)  # autentykacja
+        user = authenticate(request, username=username, password=password)  # Autentycation
         if user is not None:
-            login(request, user)  # autoryzacja
+            login(request, user)  # Autoryzation
             redirect_url = request.GET.get('next', 'home')
             return redirect(redirect_url)
-        return render(request, 'login.html')
+        else:
+            messages.error(request, 'Invalid username or password')  # Add error message
+            return render(request, 'login.html')
+
 
 
 class LogoutView(View):

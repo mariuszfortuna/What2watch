@@ -35,6 +35,16 @@ urlpatterns = [
     path('movie/<int:movie_id>/ratings_comments/', views.RatingCommentsView.as_view(), name='ratings_comments_for_movie'),
     path('updateMovie/<int:pk>/', views.UpdateMovie.as_view(), name='update_movie'),
     path('updatePerson/<int:pk>/', views.UpdatePerson.as_view(), name='update_person'),
+    path('addPlatform/', views.AddPlatformModelFormView.as_view(), name='add_platform'),
+    path('addGenre/', views.AddGenreModelFormView.as_view(), name='add_genre'),
+    path('genres/', views.GenreListView.as_view(), name='genre_list'),
+    path('platforms/', views.PlatformListView.as_view(), name='platform_list'),
+    path('platform/<int:pk>', views.UpdatePlatform.as_view(), name='update_platform'),
+    path('genre/<int:pk>', views.UpdateGenre.as_view(), name='update_genre')
+
+
+
+
 
 
 

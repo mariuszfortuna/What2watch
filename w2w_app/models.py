@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models import DecimalField
 from django.db.models.functions import Coalesce
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.urls import reverse
 
 
 # Create your models here.
@@ -24,12 +25,18 @@ class Platform(models.Model):
     def __str__(self):
         return self.name
 
+    def get_update_url(self):
+        return reverse('update_platform', kwargs={'pk': self.id})
+
 
 class Genre(models.Model):
     name = models.CharField(max_length=128)
 
     def __str__(self):
         return self.name
+
+    def get_update_url(self):
+        return reverse('update_genre', kwargs={'pk': self.id})
 
 
 class Movie(models.Model):
@@ -44,7 +51,6 @@ class Movie(models.Model):
         return RatingComment.objects.filter(movie=self).aggregate(
             avg=Coalesce(models.Avg('rating'), 0, output_field=DecimalField()),
         )['avg']
-
 
 
 class RatingComment(models.Model):

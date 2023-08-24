@@ -39,3 +39,21 @@ class RatingCommentsForm(forms.ModelForm):
 
 # class PersonsFilterForm(forms.Form):
 #     first_name = forms.CharField()
+
+class AddPlatformModelForm(forms.ModelForm):
+    name = forms.CharField()
+    logo = forms.ImageField()
+    website_link = forms.URLField()
+
+    class Meta:
+        model = Platform
+        fields = ['name', 'logo', 'website_link']
+
+
+class AddGenreModelForm(forms.ModelForm):
+    name = forms.CharField()
+
+    class Meta:
+        model = Genre
+        fields = ['name']
+

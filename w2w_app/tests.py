@@ -35,13 +35,6 @@ def test_movie_list_view(movies):
     for movie in movies:
         assert movie in response.context['movies']
 
-    # for movie in movies:
-    #     assert any(movie.title == listed_movie.title for listed_movie in response.context['movies'])
-    #     assert any(movie.director == listed_movie.director for listed_movie in response.context['movies'])
-    #     assert any(movie.platform == listed_movie.platform for listed_movie in response.context['movies'])
-    #     assert any(movie.poster == listed_movie.poster for listed_movie in response.context['movies'])
-    #     assert any(movie.genres == listed_movie.genres for listed_movie in response.context['movies'])
-    #     assert any(movie.actors == listed_movie.actors for listed_movie in response.context['movies'])
 
 
 @pytest.mark.django_db
