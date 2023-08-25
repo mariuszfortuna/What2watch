@@ -5,7 +5,7 @@
     {% csrf_token %}
     <table class="table">
         <thead>
-            <tr><th> nazwa </th><th>input</th><th>errors</th></tr>
+            <tr><th> Name </th><th>Data</th></tr>
         </thead>
         <tbody>
 
@@ -13,10 +13,10 @@
         <tr>
             <td>{{ field.name }}</td>
             <td>{{ field }}</td>
-            <td>{% for error in field.errors %}{{ error }}{% endfor %}</td>
+
         </tr>
         {% endfor %}
-        <tr><td colspan="3">{% for error in form.non_field_errors %}{{ error }}{% endfor %}</td></tr>
+
         </tbody>
     </table>
     <input type="submit">

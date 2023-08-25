@@ -11,7 +11,7 @@
                     <th>Last Name</th>
                     <th>Email</th>
                     <th>Groups</th>
-                    <th>Permissions</th>
+
                     <th>Action</th>
                 </tr>
             </thead>
@@ -31,13 +31,7 @@
                             </ul>
                         </td>
 
-                        <td>
-                            <ul>
-                                {% for per in user.user_permissions.all %}
-                                    <li>{{ per.codename }}</li>
-                                {% endfor %}
-                            </ul>
-                        </td>
+
                         <td><a href="{% url 'update_user' user.id %}" class="btn btn-primary">Change</a></td>
                     </tr>
                 {% endfor %}

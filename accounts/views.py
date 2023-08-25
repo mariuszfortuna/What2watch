@@ -1,4 +1,3 @@
-from psycopg2 import IntegrityError
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, Group
@@ -6,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
 from django.views.generic import ListView, UpdateView
-from accounts.forms import RegisterForm, UserUpdateView
+from accounts.forms import UserUpdateView, CreateUserForm
 from django.contrib import messages
 from what_to_watch.context_processors import user_is_moderator
 
@@ -23,13 +22,13 @@ class LoginView(View):
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)  # Autentycation
         if user is not None:
-            login(request, user)  # Autoryzation
+            login(request, user)
             redirect_url = request.GET.get('next', 'home')
             return redirect(redirect_url)
         else:
-            messages.error(request, 'Invalid username or password')  # Add error message
-            return render(request, 'login.html')
-
+            messages.info(request, 'Invalid username or password')  # Add error message
+            context = {}
+            return render(request, 'login.html', context)
 
 
 class LogoutView(View):
@@ -39,23 +38,21 @@ class LogoutView(View):
         return redirect('home')
 
 
+
 class RegisterView(View):
+    form = CreateUserForm()
 
     def get(self, request):
-        form = RegisterForm()
+        form = CreateUserForm()
         return render(request, 'register.html', {'form': form})
 
     def post(self, request):
-        form = RegisterForm(request.POST)
+        form = CreateUserForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.set_password(form.cleaned_data['password1'])
-            user.save()
-
+            user = form.save()
             # Add a user to an existing "Users" group
             users_group = Group.objects.get(name='Users')
             user.groups.add(users_group)
-
             return redirect('login')
         return render(request, 'register.html', {'form': form})
 
