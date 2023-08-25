@@ -1,11 +1,9 @@
 import pytest
 from django.test import Client
-# Create your tests here.
 from django.urls import reverse
-from w2w_app.forms import AddMovieModelForm, AddPersonModelForm, AddPlatformModelForm
-from w2w_app.models import Person, Platform, Genre, Movie, RatingComment
+from w2w_app.forms import AddMovieModelForm, AddPlatformModelForm
 
-
+# Create your tests here.
 
 @pytest.mark.django_db
 def test_home():
@@ -132,6 +130,7 @@ def test_update_movie_not_login(movie):
     response = client.get(url)
     assert response.status_code == 302
 
+
 @pytest.mark.django_db
 def test_update_movie_moderator_login(movie, moderator):
     url = reverse('update_movie', kwargs={'pk': movie.id})
@@ -141,12 +140,14 @@ def test_update_movie_moderator_login(movie, moderator):
     assert response.status_code == 200
     assert response.context['movie'] == movie
 
+
 @pytest.mark.django_db
 def test_update_person_not_login(person):
     url = reverse('update_person', kwargs={'pk': person.id})
     client = Client()
     response = client.get(url)
     assert response.status_code == 302
+
 
 @pytest.mark.django_db
 def test_update_person_moderator_login(person, moderator):
@@ -225,6 +226,7 @@ def test_update_platform_not_login(platform):
     response = client.get(url)
     assert response.status_code == 302
 
+
 @pytest.mark.django_db
 def test_update_platform_moderator_login(platform, moderator):
     url = reverse('update_platform', kwargs={'pk': platform.id})
@@ -242,6 +244,7 @@ def test_update_genre_not_login(genres):
     response = client.get(url)
     assert response.status_code == 302
 
+
 @pytest.mark.django_db
 def test_update_genre_moderator_login(genres, moderator):
     url = reverse('update_genre', kwargs={'pk': genres[0].id})
@@ -250,4 +253,3 @@ def test_update_genre_moderator_login(genres, moderator):
     response = client.get(url)
     assert response.status_code == 200
     assert response.context['genre'] == genres[0]
-

@@ -3,8 +3,9 @@ import django_filters
 from w2w_app.models import Person, Movie
 
 
-# Filter configuration for Person List
 class PersonFilter(django_filters.FilterSet):
+    """Filter configuration for Person List"""
+
     class Meta:
         model = Person
         fields = {
@@ -13,9 +14,8 @@ class PersonFilter(django_filters.FilterSet):
         }
 
 
-
 class MovieFilter(django_filters.FilterSet):
-
+    """Filter configuration for Movie List"""
 
     class Meta:
         model = Movie

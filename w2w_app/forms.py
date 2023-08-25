@@ -13,8 +13,6 @@ class AddPersonModelForm(forms.ModelForm):
         fields = ['first_name', 'last_name', 'photo']
 
 
-
-
 class AddMovieModelForm(forms.ModelForm):
     title = forms.CharField()
     director = forms.ModelChoiceField(queryset=Person.objects.all(), required=False)
@@ -32,13 +30,11 @@ class RatingCommentsForm(forms.ModelForm):
     RATING_CHOICES = [(i, str(i)) for i in range(1, 11)]  # Tworzy listę krotek (wartość, etykieta)
     rating = forms.ChoiceField(choices=RATING_CHOICES, label='Rating')
     comment = forms.CharField(widget=forms.Textarea, label='Comment')
+
     class Meta:
         model = RatingComment
         fields = ['rating', 'comment']
 
-
-# class PersonsFilterForm(forms.Form):
-#     first_name = forms.CharField()
 
 class AddPlatformModelForm(forms.ModelForm):
     name = forms.CharField()
@@ -56,4 +52,3 @@ class AddGenreModelForm(forms.ModelForm):
     class Meta:
         model = Genre
         fields = ['name']
-

@@ -4,8 +4,7 @@ from django.http import Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
-from django.views.generic import ListView, UpdateView
-from django.db.models import Avg, FloatField, Case, When, Value
+from django.views.generic import UpdateView
 
 from w2w_app.filters import PersonFilter, MovieFilter
 from w2w_app.forms import AddPersonModelForm, AddMovieModelForm, RatingCommentsForm, AddPlatformModelForm, \
@@ -15,7 +14,10 @@ from what_to_watch.context_processors import user_is_moderator
 
 
 # Create your views here.
+
 class HomeView(View):
+    """HomeView class: Displays the home page with recently added movies."""
+
     def get(self, request):
         recently_added_movies = Movie.objects.order_by('-id')[:3]
 
@@ -26,6 +28,8 @@ class HomeView(View):
 
 
 class PersonView(View):
+    """PersonView class: Displays details about a specific person."""
+
     def get(self, request, person_id):
         person = Person.objects.get(pk=person_id)
         if person is not None:
@@ -35,6 +39,7 @@ class PersonView(View):
 
 
 class PersonsFilterFormView(View):
+    """PersonsFilterFormView class: Displays a list of persons with filtering."""
 
     def get(self, request):
         person_filter = PersonFilter(request.GET, queryset=Person.objects.all())
@@ -46,6 +51,7 @@ class PersonsFilterFormView(View):
 
 
 class AddPersonModelFormView(UserPassesTestMixin, View):
+    """AddPersonModelFormView class: Handles adding a new person."""
 
     def get(self, request):
         form = AddPersonModelForm()
@@ -63,6 +69,7 @@ class AddPersonModelFormView(UserPassesTestMixin, View):
 
 
 class UpdatePerson(UserPassesTestMixin, UpdateView):
+    """UpdatePerson class: Handles updating a person's details."""
     model = Person
     fields = '__all__'
     template_name = 'form.html'
@@ -75,6 +82,7 @@ class UpdatePerson(UserPassesTestMixin, UpdateView):
 
 
 class AddMovieModelFormView(UserPassesTestMixin, View):
+    """AddMovieModelFormView class: Handles adding a new movie."""
 
     def get(self, request):
         form = AddMovieModelForm()
@@ -91,8 +99,9 @@ class AddMovieModelFormView(UserPassesTestMixin, View):
         return user_is_moderator(self.request.user)
 
 
-
 class MovieFilterFormView(View):
+    """Displays a list of movies with filtering options.
+    Handles the HTTP GET request and renders the filtered movie list."""
 
     def get(self, request):
         movie_filter = MovieFilter(request.GET, queryset=Movie.objects.all())
@@ -104,6 +113,8 @@ class MovieFilterFormView(View):
 
 
 class MovieView(View):
+    """Detail movie view"""
+
     def get(self, request, movie_id):
         movie = Movie.objects.get(pk=movie_id)
         if movie is not None:
@@ -113,6 +124,7 @@ class MovieView(View):
 
 
 class UpdateMovie(UserPassesTestMixin, UpdateView):
+    """Handles updating movie details."""
     model = Movie
     fields = '__all__'
     template_name = 'form.html'
@@ -125,6 +137,12 @@ class UpdateMovie(UserPassesTestMixin, UpdateView):
 
 
 class RatingCommentsView(LoginRequiredMixin, View):
+    """
+       Handles viewing and adding rating comments for a movie.
+
+       This view allows authenticated users to view and add comments and ratings for a movie.
+       Users need to be logged in to access this view, as it inherits from LoginRequiredMixin.
+    """
 
     def get(self, request, movie_id):
         movie = Movie.objects.get(pk=movie_id)
@@ -152,6 +170,12 @@ class RatingCommentsView(LoginRequiredMixin, View):
 ##
 
 class AddPlatformModelFormView(UserPassesTestMixin, View):
+    """
+    Handles adding a new platform.
+
+    This view allows authorized moderators to add a new platform to the system.
+    It inherits from the UserPassesTestMixin and View.
+    """
 
     def get(self, request):
         form = AddPlatformModelForm()
@@ -167,7 +191,9 @@ class AddPlatformModelFormView(UserPassesTestMixin, View):
     def test_func(self):
         return user_is_moderator(self.request.user)
 
+
 class PlatformListView(View):
+    """Displays a list of platforms."""
 
     def get(self, request):
         platforms = Platform.objects.all()
@@ -175,6 +201,12 @@ class PlatformListView(View):
 
 
 class UpdatePlatform(UserPassesTestMixin, UpdateView):
+    """
+      Handles updating platform details.
+
+      This view allows authorized moderators to update the details of a platform.
+      It inherits from the UserPassesTestMixin and UpdateView.
+    """
     model = Platform
     fields = '__all__'
     template_name = 'form.html'
@@ -182,13 +214,12 @@ class UpdatePlatform(UserPassesTestMixin, UpdateView):
     def get_success_url(self):
         return reverse('update_platform', kwargs={'pk': self.kwargs['pk']})
 
-
     def test_func(self):
         return user_is_moderator(self.request.user)
 
 
-
 class AddGenreModelFormView(UserPassesTestMixin, View):
+    """Handles adding a new genre."""
 
     def get(self, request):
         form = AddGenreModelForm()
@@ -206,6 +237,7 @@ class AddGenreModelFormView(UserPassesTestMixin, View):
 
 
 class GenreListView(View):
+    """Displays a list of genres"""
 
     def get(self, request):
         genres = Genre.objects.all()
@@ -213,6 +245,7 @@ class GenreListView(View):
 
 
 class UpdateGenre(UserPassesTestMixin, UpdateView):
+    """Handles updating genre details."""
     model = Genre
     fields = '__all__'
     template_name = 'form.html'
