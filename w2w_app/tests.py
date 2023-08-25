@@ -36,7 +36,6 @@ def test_movie_list_view(movies):
         assert movie in response.context['movies']
 
 
-
 @pytest.mark.django_db
 def test_ratings_comments_for_movie(movies, user):
     url = reverse('ratings_comments_for_movie', kwargs={'movie_id': movies[0].id})
@@ -56,3 +55,22 @@ def test_ratings_comments_for_movie_get_not_login(movie):
     client = Client()
     response = client.get(url)
     assert response.status_code == 302
+
+
+@pytest.mark.django_db
+def test_person(person):
+    url = reverse('person', kwargs={'person_id': person.id})
+    client = Client()
+    response = client.get(url)
+    assert response.status_code == 200
+    assert str(person.first_name) in str(response.content)
+    # Pobieranie kontekstu z odpowiedzi
+    assert response.context['person'] == person
+
+    # Sprawdzanie, czy imię osoby jest w którymkolwiek elemencie kontekstu
+    # assert any(person.first_name in element for element in context)
+    # assert person in context
+
+    # Weryfikacja, czy imię i nazwisko osoby znajdują się w którymkolwiek elemencie kontekstu
+    # assert person.first_name in response.content
+    assert person.last_name in response.content.decode('utf-8')

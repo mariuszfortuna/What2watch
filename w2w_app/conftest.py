@@ -15,7 +15,7 @@ def persons():
 @pytest.fixture
 def person():
     for x in range(10):
-        p = Person.objects.create(first_name=x, last_name=x, photo='default_person.jpeg')
+        p = Person.objects.create(first_name='Jan', last_name="Kowalski", photo='default_person.jpeg')
     return p
 
 @pytest.fixture
