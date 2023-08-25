@@ -72,7 +72,7 @@ def user():
 @pytest.fixture
 def moderator():
     moderator = User.objects.create(username='moderator')
-    users_group = Group.objects.get(name='Moderators')
-    user.groups.add(users_group)
+    moderators_group, created = Group.objects.get_or_create(name='Moderators')
+    moderator.groups.add(moderators_group)
 
     return moderator
