@@ -52,9 +52,15 @@ class Movie(models.Model):
             avg=Coalesce(models.Avg('rating'), 0, output_field=DecimalField()),
         )['avg']
 
+    def __str__(self):
+        return self.title
+
 
 class RatingComment(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='ratings_comments')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     rating = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1), MaxValueValidator(10)])
     comment = models.TextField()
+
+    def __str__(self):
+        return f"Comment to {self.movie} by {self.user}"
