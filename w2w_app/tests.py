@@ -3,6 +3,7 @@ from django.test import Client
 from django.urls import reverse
 from w2w_app.forms import AddMovieModelForm, AddPlatformModelForm
 
+
 # Create your tests here.
 
 @pytest.mark.django_db
